@@ -32,7 +32,7 @@ else{
 <h1><?php echo esc_html( $sTitle ); ?></h1>
 <?php
     // Display the details
-    echo \lbab\post\getDetailsMarkup( $iItemID ), PHP_EOL;
+    // echo \lbab\post\getDetailsMarkup( $iItemID ), PHP_EOL;
 
     // Display the post thumbnail
     echo $sFigureTag, PHP_EOL;
