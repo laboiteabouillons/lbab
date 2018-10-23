@@ -13,12 +13,14 @@ namespace lbab\head;
 /**
  * Returns the meta description for the home page.
  *
+ * @param integer $iPage The current page number.
  * @param string $sKey The name of the custom field. Use the default.
  * @return string
  */
-function getMetaDescriptionForHomePage( string $sKey = 'meta-description' ) : string {
+function getMetaDescriptionForHomePage( int $iPage = 0, string $sKey = 'meta-description' ) : string {
     $sValue = get_post_meta( get_option( 'page_for_posts' ), $sKey, true );
-    return empty( $sValue ) ? 'Cette page montre un résumé de mes derniers articles.' : esc_attr( $sValue );
+    $sValue = empty( $sValue ) ? 'Cette page montre un résumé de mes derniers articles.' : esc_attr( $sValue );
+    return $sValue . ( (0==$iPage) ? '' : ' Page '.$iPage.'.' );
 }
 
 /**
@@ -44,6 +46,30 @@ function getMetaDescriptionForAPage( int $iTheId, string $sKey = 'meta-descripti
 }
 
 /**
+ * Returns the meta description for a category.
+ *
+ * @param integer $iPage The current page number.
+ * @return string
+ */
+function getMetaDescriptionForACategory( int $iPage = 0 ) : string {
+    return sprintf( 'Description du thème %1$s. Liste des articles associés.%2$s'
+    , esc_attr( single_cat_title( '', false ))
+    , (0==$iPage) ? '' : ' Page '.$iPage.'.');
+}
+
+/**
+ * Returns the meta description for a tag.
+ *
+ * @param integer $iPage The current page number.
+ * @return string
+ */
+function getMetaDescriptionForATag( int $iPage = 0 ) : string {
+    return sprintf( 'Description du sujet particulier %1$s. Liste des articles associés.%2$s'
+    , esc_attr( single_tag_title( '', false ))
+    , (0==$iPage) ? '' : ' Page '.$iPage.'.');
+}
+
+/**
  * Returns the meta description for a post.
  *
  * @param integer $iTheId The post id.
@@ -64,20 +90,26 @@ function getMetaDescriptionForAPost( int $iTheId, string $sKey = 'meta-descripti
 }
 
 /**
- * Retrieve the meta description from the post custom field.
+ * Retrieve the meta description from the current page.
  *
+ * @param integer $iTheId The post id.
+ * @param integer $iPage The page number.
  * @param string $sKey The name of the custom field. Use the default.
  * @return string
  */
-function getMetaDescription( string $sKey = 'meta-description' ) : string {
+function getMetaDescription( int $iTheId, int $iPage, string $sKey = 'meta-description' ) : string {
     if( is_home() ){
-        $sValue = \lbab\head\getMetaDescriptionForHomePage( $sKey );
+        $sValue = \lbab\head\getMetaDescriptionForHomePage( $iPage, $sKey );
     } elseif( is_404() ){
         $sValue = \lbab\head\getMetaDescriptionFor404Page();
     } elseif( is_single() ){
-        $sValue = \lbab\head\getMetaDescriptionForAPost( get_the_ID(), $sKey);
+        $sValue = \lbab\head\getMetaDescriptionForAPost( $iTheId, $sKey);
+    } elseif( is_category() ){
+        $sValue = \lbab\head\getMetaDescriptionForACategory( $iPage );
+    } elseif( is_tag() ){
+        $sValue = \lbab\head\getMetaDescriptionForATag( $iPage );
     } else {
-        $sValue = \lbab\head\getMetaDescriptionForAPage( get_the_ID(), $sKey);
+        $sValue = \lbab\head\getMetaDescriptionForAPage( $iTheId, $sKey);
     }
     return $sValue;
 }
@@ -94,14 +126,20 @@ function getMetaRobots() : string {
 /**
  * Customize the wp_head action hook.
  */
-function getCustomHead() {
+function printCustomHead() {
+
+    // Retrieve some data
+    $iTheId = get_the_ID();
+    $iTheId = (false===$iTheId) ? 0 : $iTheId;
+    $iPage = get_query_var( 'paged', 0 );
+
     // Mandatory metas
     echo '<meta http-equiv="X-UA-Compatible" content="IE=edge" />', PHP_EOL;
     echo '<meta name="viewport" content="width=device-width, initial-scale=1" />', PHP_EOL;
     echo '<base href="' . esc_url( get_bloginfo( 'template_url', 'display' )) . '/" />', PHP_EOL;
     echo '<meta name="apple-mobile-web-app-capable" content="yes" />', PHP_EOL;
     echo '<meta name="author" content="Anne-Sophie Evrard" />', PHP_EOL;
-    echo '<meta name="description" content="' . \lbab\head\getMetaDescription() . '" />', PHP_EOL;
+    echo '<meta name="description" content="' . \lbab\head\getMetaDescription( $iTheId, $iPage ) . '" />', PHP_EOL;
     echo '<meta name="robots" content="' . \lbab\head\getMetaRobots() . '" />', PHP_EOL;
     // Site icon
     if( !has_site_icon() ){

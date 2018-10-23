@@ -28,6 +28,18 @@ get_template_part( 'template-parts/header/main', 'menu' );
 <article>
 <h1><?php single_post_title(); ?></h1>
 <?php the_content(); ?>
+<label class="button primary large" for="modal-check">Click to display a modal dialog</label>
+<input id="modal-check" type="checkbox">
+<div class="modal" style="text-align:initial">
+<div class="card">
+<label for="modal-check" class="close"></label>
+<h3 class="section double-padded">Modal</h3>
+<div class="section double-padded">
+<iframe width="540" height="783" src="https://my.sendinblue.com/users/subscribe/js_id/2w6oq/id/1" frameborder="0" scrolling="auto" allowfullscreen style="display: block;margin-left: auto;margin-right: auto;"></iframe>
+<label class="button primary" for="modal-check">Close modal</label>
+</div>
+</div>
+</div>
 </article>
 </div>
 </div>

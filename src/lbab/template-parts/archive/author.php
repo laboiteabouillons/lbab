@@ -1,6 +1,7 @@
 <?php
+declare(strict_types=1);
 /**
- * The template for displaying the authors
+ * Secondary author Template.
  *
  * @link https://codex.wordpress.org/Author_Templates
  *

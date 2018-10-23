@@ -37,10 +37,9 @@ if ( have_posts() ) {
          */
         get_template_part( 'template-parts/post/content', 'posts' );
     }
-    echo \lbab\post\filterPaginationTemplate( get_the_posts_pagination( [
-        'mid_size' => 1,
-        'prev_text' => '<span class="tooltip" aria-label="' . __( 'Les plus récents articles', 'lbab' ) . '"><span class="text-first" /></span>',
-        'next_text' => '<span class="tooltip" aria-label="' . __( 'Les plus anciens articles', 'lbab' ) . '"><span class="text-last" /></span>']));
+
+    // Pagination
+    get_template_part( 'template-parts/navigation/pagination' );
 }
 else {
     get_template_part( 'template-parts/post/content', 'none' );

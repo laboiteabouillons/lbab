@@ -3,12 +3,12 @@
 Theme Name: La boite à bouillons
 Theme URI: https://www.laboiteabouillons.fr/
 Author: Olivier Jullien
-Author URI: https://www.laboiteabouillons.fr/
+Author URI: https://github.com/ojullien
 Description: La boite à bouillons private theme
-Version: v1.0.0-20171218
+Version: v1.0.0
 License: MIT
 License URI: https://mit-license.org/
 Text Domain: La boite à bouillons
-Tags: custom-menu, featured-images, translation-ready
+Tags: custom logo, custom header image, custom site icon, custom background, post formats, featured images, translation ready. No widget, no sidebar, no comment.
 */
 @import url("assets/css/lbab.css");
