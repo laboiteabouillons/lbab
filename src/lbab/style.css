@@ -1,0 +1,14 @@
+@charset "UTF-8";
+/*!
+Theme Name: La boite à bouillons
+Theme URI: https://www.laboiteabouillons.fr/
+Author: Olivier Jullien
+Author URI: https://www.laboiteabouillons.fr/
+Description: La boite à bouillons private theme
+Version: v1.0.0-20171218
+License: MIT
+License URI: https://mit-license.org/
+Text Domain: La boite à bouillons
+Tags: custom-menu, featured-images, translation-ready
+*/
+@import url("assets/css/lbab.css");

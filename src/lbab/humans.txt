@@ -1,0 +1,19 @@
+﻿/* humanstxt.org */
+
+/* TEAM */
+  Owner: Anne-Sophie Evrard
+  Photo: Antoine Monié
+  Developer: Olivier Jullien
+  Site: contact [at] laboiteabouillons.fr
+  Location: Nantes, France
+
+  /* THANKS */
+  @Chalarangelo: https://minicss.org/
+  Human TXT: http://humanstxt.org/
+
+/* SITE */
+  Last update: 2018/01/20
+  Language: French
+  Standards: HTML5, CSS3
+  Components: minicss.org
+  Software: visual studio code, sass

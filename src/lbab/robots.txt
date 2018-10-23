@@ -1,0 +1,3 @@
+User-agent: *
+Disallow: /wp-*
+Allow: /wp-content/uploads/
