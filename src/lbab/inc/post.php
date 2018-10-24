@@ -276,10 +276,9 @@ function getMostRecentPostLinkContent( array $aDefaults = [ 'post_status'=>'publ
     // Filter the data
     if( !empty( $aPosts ) && is_array( $aPosts[0] )){
         $aReturn = array_intersect_key( $aPosts[0], [ 'post_content'=>'post_content' ] );
-        $aReturn['post_content_raw'] = isset( $aReturn['post_content'] ) ? $aReturn['post_title'] : '';
         $aReturn['post_content'] = isset( $aReturn['post_content'] ) ? apply_filters( 'the_content', $aReturn['post_content']) : '';
     } else {
-        $aReturn = [ 'post_content_raw'=>'', 'post_content'=>'' ];
+        $aReturn = [ 'post_content'=>'' ];
     }
 
     wp_reset_query();
@@ -299,7 +298,7 @@ function lbab_shortcode_pepites( $aUserDefinedAttributes ) {
     $aLinkPosts = \lbab\post\getMostRecentPostLinkContent();
 
     foreach ( $aLinkPosts as $oPost ) {
-        $sBuffer .= '<p>' . esc_html( $aLinkPosts['post_content_raw'] ) . ' / ' . esc_html( $aLinkPosts['post_content'] ) . '</p>';
+        $sBuffer .= '<p>' . esc_html( $aLinkPosts['post_content'] ) . '</p>';
     }
 
     // Return the html code
