@@ -88,14 +88,18 @@ remove_filter( 'the_excerpt', 'wpautop' ); // Stop WP adding extra <p> </p> to t
 /**
  * Add shortcodes
  */
-//add_shortcode( 'lbab_newsletter', 'create_lbab_newsletter_shortcode' );
-function lbab_shortcode_newsletter( $atts ) {
+function lbab_shortcode_newsletter( $aUserDefinedAttributes ) {
 
-    // normalize attribute keys, lowercase
-    $atts = array_change_key_case( (array)$atts, CASE_LOWER );
+    // Declare Entire list of supported attributes and their defaults.
+    $aPairs = [ 'url' => 'https://my.sendinblue.com/users/subscribe/js_id/2w6oq/id/2' ];
 
-    $aAttributes = shortcode_atts( [ 'url' => 'https://my.sendinblue.com/users/subscribe/js_id/2w6oq/id/2' ], $atts );
-    $sUrl = $aAttributes['url'];
-    return '<div class="iframe-container"><iframe src="' . esc_url( $sUrl ). '" allowfullscreen></iframe></div>';
+    // Normalize attribute keys, lowercase
+    $aNormalizedUserDefinedAttributes = array_change_key_case( (array)$aUserDefinedAttributes, CASE_LOWER );
+
+    // Combine and filter the user defined attribute list.
+    $aFilteredAttributes = shortcode_atts( $aPairs, $aNormalizedUserDefinedAttributes );
+
+    // Return the html code
+    return '<div class="iframe-container"><iframe src="' . esc_url( $aFilteredAttributes['url'] ). '" allowfullscreen></iframe></div>';
 }
 add_shortcode('lbab_newsletter', 'lbab_shortcode_newsletter' );
