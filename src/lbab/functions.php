@@ -13,8 +13,8 @@ declare(strict_types=1);
  * La boite à bouillons theme only works in WordPress 4.9.2 or later.
  */
 if ( version_compare( $GLOBALS['wp_version'], '4.9.2', '<' ) ) {
-	require_once get_template_directory() . '/inc/compatibility.php';
-	return;
+    require_once get_template_directory() . '/inc/compatibility.php';
+    return;
 }
 
 /**
@@ -90,7 +90,12 @@ remove_filter( 'the_excerpt', 'wpautop' ); // Stop WP adding extra <p> </p> to t
  */
 //add_shortcode( 'lbab_newsletter', 'create_lbab_newsletter_shortcode' );
 function lbab_shortcode_newsletter( $atts ) {
-    $sUrl = 'https://my.sendinblue.com/users/subscribe/js_id/2w6oq/id/2';
+
+    // normalize attribute keys, lowercase
+    $atts = array_change_key_case( (array)$atts, CASE_LOWER );
+
+    $aAttributes = shortcode_atts( [ 'url' => 'https://my.sendinblue.com/users/subscribe/js_id/2w6oq/id/2' ], $atts );
+    $sUrl = $aAttributes['url'];
     return '<div class="iframe-container"><iframe src="' . esc_url( $sUrl ). '" allowfullscreen></iframe></div>';
 }
 add_shortcode('lbab_newsletter', 'lbab_shortcode_newsletter' );
