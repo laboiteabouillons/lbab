@@ -27,7 +27,7 @@ get_template_part( 'template-parts/header/main', 'menu' );
             get_template_part( 'template-parts/post/content', 'attachment' );
         } else {
             get_template_part( 'template-parts/post/content', get_post_format() );
-            the_post_navigation();
+            //the_post_navigation();
         }
     }
 ?>

@@ -89,3 +89,4 @@ remove_filter( 'the_excerpt', 'wpautop' ); // Stop WP adding extra <p> </p> to t
  * Add shortcodes
  */
 add_shortcode('lbab_newsletter', 'lbab_shortcode_newsletter' );
+add_shortcode('lbab_pepites', 'lbab_shortcode_pepites' );

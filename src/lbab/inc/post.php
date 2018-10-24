@@ -256,3 +256,52 @@ function lbab_shortcode_newsletter( $aUserDefinedAttributes ) {
     // Return the html code
     return '<div class="iframe-container"><iframe src="' . esc_url( $aFilteredAttributes['url'] ). '" allowfullscreen></iframe></div>';
 }
+
+/**
+ * Returns the most recent post link content. Used for the pepites.
+ *
+ * @link https://codex.wordpress.org/Function_Reference/wp_get_recent_posts
+ *
+ * @param array $aDefaults Array of arguments to retrieve the most recent post link. Use the default.
+ * @return array [ 'post_content_raw'=>'...', 'post_content'=>'...' ]
+ */
+function getMostRecentPostLinkContent( array $aDefaults = [ 'post_status'=>'publish', 'has_password'=>false, 'numberposts'=>21, 'orderby'=>'post_date', 'order'=>'DESC', 'tax_query' => [[ 'taxonomy' => 'post_format', 'field' => 'slug', 'terms' => [ 'post-format-link' ]]]]) {
+
+    // Initialize
+    $aReturn = FALSE;
+
+    // Retrieve the most recent posts.
+    $aPosts = wp_get_recent_posts( $aDefaults, ARRAY_A );
+
+    // Filter the data
+    if( !empty( $aPosts ) && is_array( $aPosts[0] )){
+        $aReturn = array_intersect_key( $aPosts[0], [ 'post_content'=>'post_content' ] );
+        $aReturn['post_content_raw'] = isset( $aReturn['post_content'] ) ? $aReturn['post_title'] : '';
+        $aReturn['post_content'] = isset( $aReturn['post_content'] ) ? apply_filters( 'the_content', $aReturn['post_content']) : '';
+    } else {
+        $aReturn = [ 'post_content_raw'=>'', 'post_content'=>'' ];
+    }
+
+    wp_reset_query();
+    return $aReturn;
+}
+
+/**
+ * Create shortcode for the newsletter subscription
+ * Use the shortcode: [lbab_newsletter url="https://my.sendinblue.com/users/subscribe/js_id/2w6oq/id/2"]
+ *
+ * @param array $aUserDefinedAttributes (Required) User defined attributes in shortcode tag.
+ * @return string html code for newsletter
+ */
+function lbab_shortcode_pepites( $aUserDefinedAttributes ) {
+
+    $sBuffer = '';
+    $aLinkPosts = \lbab\post\getMostRecentPostLinkContent();
+
+    foreach ( $aLinkPosts as $oPost ) {
+        $sBuffer .= '<p>' . esc_html( $aLinkPosts['post_content_raw'] ) . ' / ' . esc_html( $aLinkPosts['post_content'] ) . '</p>';
+    }
+
+    // Return the html code
+    return $sBuffer;
+}
