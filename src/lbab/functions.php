@@ -84,3 +84,8 @@ add_filter( 'login_headertitle', '\lbab\customizer\getCustomLoginHeaderTitle' );
  */
 remove_filter( 'the_content', 'wpautop' ); // Stop WP adding extra <p> </p> to the pages' content
 remove_filter( 'the_excerpt', 'wpautop' ); // Stop WP adding extra <p> </p> to the post excerpts' content
+
+/**
+ * Add shortcodes
+ */
+add_shortcode( 'lbab_newsletter', 'create_lbab_newsletter_shortcode' );

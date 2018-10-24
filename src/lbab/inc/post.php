@@ -195,14 +195,14 @@ function filterPaginationTemplate( string $sTemplate,
  * @return string 'Continue reading' link prepended with an ellipsis.
  */
 function filterMoreLinkForAutomaticallyGeneratedExcerpt( string $sLink ) : string {
-	if( is_admin() ) {
-		return $sLink;
-	}
+    if( is_admin() ) {
+        return $sLink;
+    }
 
-	$sLink = sprintf( '<br /><a href="%1$s">%2$s</a>',
-		esc_url( get_permalink( get_the_ID() ) ),
-		'&#187; Lire la suite de cet article' );
-	return ' &hellip; ' . $sLink;
+    $sLink = sprintf( '<br /><a href="%1$s">%2$s</a>',
+        esc_url( get_permalink( get_the_ID() ) ),
+        '&#187; Lire la suite de cet article' );
+    return ' &hellip; ' . $sLink;
 }
 
 /**
@@ -214,8 +214,29 @@ function filterMoreLinkForAutomaticallyGeneratedExcerpt( string $sLink ) : strin
 function filterMoreLinkForManualExcerpt( string $sLink ) : string {
     if( has_excerpt() && !is_attachment() ) {
         $sLink .= sprintf( '<br /><a href="%1$s">%2$s</a>',
-		esc_url( get_permalink( get_the_ID() ) ),
-		'&#187; Découvrir cet article' );
+        esc_url( get_permalink( get_the_ID() ) ),
+        '&#187; Découvrir cet article' );
       }
       return $sLink;
+}
+
+/**
+ * Create shortcode for the newsletter subscription
+ * Use the shortcode: [lbab_newsletter url="https://my.sendinblue.com/users/subscribe/js_id/2w6oq/id/2"]
+ *
+ * @return string html code for newsletter
+ */
+function create_lbab_newsletter_shortcode( $atts ) : string {
+
+    // normalize attribute keys, lowercase
+    $atts = array_change_key_case( (array)$atts, CASE_LOWER );
+
+    // Attributes
+    $atts = shortcode_atts(
+        [ 'url' => 'https://my.sendinblue.com/users/subscribe/js_id/2w6oq/id/2' ],
+        $atts,
+        'lbab_newsletter'
+    );
+
+    return '<div class="iframe-container"><iframe src="' . esc_url( $atts['url'] ). '" allowfullscreen></iframe></div>';
 }
