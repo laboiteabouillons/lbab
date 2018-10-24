@@ -213,9 +213,24 @@ function filterMoreLinkForAutomaticallyGeneratedExcerpt( string $sLink ) : strin
  */
 function filterMoreLinkForManualExcerpt( string $sLink ) : string {
     if( has_excerpt() && !is_attachment() ) {
+
+        // Post format
+        $sPostFormat = get_post_format();
+        if ( $sPostFormat && !is_wp_error($sPostFormat) ) {
+            $sPostFormat = sanitize_html_class( $sPostFormat );
+        } else {
+            $sPostFormat = 'standard';
+        }
+
+        if( strcasecmp( $sPostFormat, 'link') == 0) {
+            $sBuffer = '&#187; Découvrir cette pépite';
+        } else {
+            $sBuffer = '&#187; Découvrir cet article';
+        }
+
         $sLink .= sprintf( '<br /><a href="%1$s">%2$s</a>',
         esc_url( get_permalink( get_the_ID() ) ),
-        '&#187; Découvrir cet article' );
+        $sBuffer );
       }
       return $sLink;
 }
@@ -224,17 +239,20 @@ function filterMoreLinkForManualExcerpt( string $sLink ) : string {
  * Create shortcode for the newsletter subscription
  * Use the shortcode: [lbab_newsletter url="https://my.sendinblue.com/users/subscribe/js_id/2w6oq/id/2"]
  *
+ * @param array $aUserDefinedAttributes (Required) User defined attributes in shortcode tag.
  * @return string html code for newsletter
  */
-function create_lbab_newsletter_shortcode( $atts ) {
+function lbab_shortcode_newsletter( $aUserDefinedAttributes ) {
 
-    // normalize attribute keys, lowercase
-//    $atts = array_change_key_case( (array)$atts, CASE_LOWER );
+    // Declare Entire list of supported attributes and their defaults.
+    $aPairs = [ 'url' => 'https://my.sendinblue.com/users/subscribe/js_id/2w6oq/id/2' ];
 
-    // Attributes
-    $a = shortcode_atts(
-        [ 'url' => 'https://my.sendinblue.com/users/subscribe/js_id/2w6oq/id/2' ],
-        $atts );
+    // Normalize attribute keys, lowercase
+    $aNormalizedUserDefinedAttributes = array_change_key_case( (array)$aUserDefinedAttributes, CASE_LOWER );
 
-    return '<div class="iframe-container"><iframe src="' . esc_url( $a['url'] ). '" allowfullscreen></iframe></div>';
+    // Combine and filter the user defined attribute list.
+    $aFilteredAttributes = shortcode_atts( $aPairs, $aNormalizedUserDefinedAttributes );
+
+    // Return the html code
+    return '<div class="iframe-container"><iframe src="' . esc_url( $aFilteredAttributes['url'] ). '" allowfullscreen></iframe></div>';
 }
