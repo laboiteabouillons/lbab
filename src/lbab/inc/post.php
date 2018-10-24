@@ -296,12 +296,12 @@ function getMostRecentPostLinkContent( array $aDefaults = [ 'post_status'=>'publ
 function lbab_shortcode_pepites( $aUserDefinedAttributes ) {
 
     $sBuffer = '';
-    $aLinkPosts = \lbab\post\getMostRecentPostLinkContent();
+/*    $aLinkPosts = \lbab\post\getMostRecentPostLinkContent();
 
     foreach ( $aLinkPosts as $oPost ) {
         $sBuffer .= '<p>' . esc_html( $aLinkPosts['post_content_raw'] ) . ' / ' . esc_html( $aLinkPosts['post_content'] ) . '</p>';
     }
-
+*/
     // Return the html code
     return $sBuffer;
 }
