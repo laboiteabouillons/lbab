@@ -89,7 +89,8 @@ remove_filter( 'the_excerpt', 'wpautop' ); // Stop WP adding extra <p> </p> to t
  * Add shortcodes
  */
 //add_shortcode( 'lbab_newsletter', 'create_lbab_newsletter_shortcode' );
-function lbab_test( $atts ) {
-    return 'hello shortcode';
+function lbab_shortcode_newsletter( $atts ) {
+    $sUrl = 'https://my.sendinblue.com/users/subscribe/js_id/2w6oq/id/2';
+    return '<div class="iframe-container"><iframe src="' . esc_url( $sUrl ). '" allowfullscreen></iframe></div>';
 }
-add_shortcode('lbab_newsletter', 'lbab_test' );
+add_shortcode('lbab_newsletter', 'lbab_shortcode_newsletter' );
