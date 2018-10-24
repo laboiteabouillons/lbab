@@ -226,17 +226,15 @@ function filterMoreLinkForManualExcerpt( string $sLink ) : string {
  *
  * @return string html code for newsletter
  */
-function create_lbab_newsletter_shortcode( $atts ) : string {
+function create_lbab_newsletter_shortcode( $atts ) {
 
     // normalize attribute keys, lowercase
-    $atts = array_change_key_case( (array)$atts, CASE_LOWER );
+//    $atts = array_change_key_case( (array)$atts, CASE_LOWER );
 
     // Attributes
-    $atts = shortcode_atts(
+    $a = shortcode_atts(
         [ 'url' => 'https://my.sendinblue.com/users/subscribe/js_id/2w6oq/id/2' ],
-        $atts,
-        'lbab_newsletter'
-    );
+        $atts );
 
-    return '<div class="iframe-container"><iframe src="' . esc_url( $atts['url'] ). '" allowfullscreen></iframe></div>';
+    return '<div class="iframe-container"><iframe src="' . esc_url( $a['url'] ). '" allowfullscreen></iframe></div>';
 }
