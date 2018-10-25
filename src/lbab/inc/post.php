@@ -150,7 +150,7 @@ function getAttachmentDetailsMarkup( int $iTheId ) : string {
  * @param array $aDefaults Array of arguments to retrieve the most recent post. Use the default.
  * @return array [ 'post_title'=>'...', 'post_name'=>'...', 'post_excerpt'=>'...' ]
  */
-function getMostRecentPostExcerpt( array $aDefaults = ['post_status'=>'publish','has_password'=>false,'numberposts'=>1,'orderby'=>'post_date','order'=>'DESC','tax_query'=>['taxonomy'=>'post_format','field'=>'slug','terms'=>'post-format-link','operator'=>'NOT IN' ]]) {
+function getMostRecentPostExcerpt( array $aDefaults = ['post_status'=>'publish','has_password'=>false,'numberposts'=>1,'orderby'=>'post_date','order'=>'DESC','tax_query'=>[['taxonomy'=>'post_format','field'=>'slug','terms'=>'post-format-link','operator'=>'NOT IN']]]) {
 
     // Initialize
     $aReturn = FALSE;
