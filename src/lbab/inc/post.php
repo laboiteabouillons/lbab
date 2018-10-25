@@ -315,3 +315,22 @@ function lbab_shortcode_pepites( $aUserDefinedAttributes ) {
     // Return the html code
     return $sBuffer;
 }
+
+/**
+ * Filters the post_navigation template.
+ * Rename classes.
+ *
+ * @param object $query The query object
+ * @return void
+ */
+function filterPostQueryForHome( $query ) {
+    if ( !is_admin() && $query->is_home() && $query->is_main_query() ) {
+        $args = [ [
+            'taxonomy' => 'post_format',
+            'field' => 'slug',
+            'terms' => 'post-format-link',
+            'operator' => 'NOT IN'
+        ]];
+        $query->set( 'tax_query', $args );
+    }
+}

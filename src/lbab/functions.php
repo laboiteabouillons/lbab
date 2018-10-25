@@ -38,6 +38,7 @@ add_action( 'wp_head', '\lbab\head\printCustomHead', 2); // Custom <head>
 defined( 'WP_DEBUG_DISPLAY' ) && (TRUE===constant( 'WP_DEBUG_DISPLAY' )) && add_action( 'wp_footer', '\lbab\footer\debug', 90 ); // Load WP_FOOTER actions.
 add_action( 'customize_register', '\lbab\customizer\customizeRegister' ); // Defines new Customizer panels, sections, settings, and controls.
 add_action('login_head', '\lbab\customizer\printCustomLoginLogo'); // Customises the login form.
+add_action( 'pre_get_posts', '\lbab\post\filterPostQueryForHome' );
 
 /**
  * Remove Actions
