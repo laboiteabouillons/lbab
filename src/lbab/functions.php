@@ -10,9 +10,9 @@ declare(strict_types=1);
  */
 
 /**
- * La boite à bouillons theme only works in WordPress 4.9.2 or later.
+ * La boite à bouillons theme only works in WordPress 4.9.8 or later.
  */
-if ( version_compare( $GLOBALS['wp_version'], '4.9.2', '<' ) ) {
+if ( version_compare( $GLOBALS['wp_version'], '4.9.8', '<' ) ) {
     require_once get_template_directory() . '/inc/compatibility.php';
     return;
 }

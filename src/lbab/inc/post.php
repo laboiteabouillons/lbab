@@ -258,53 +258,60 @@ function lbab_shortcode_newsletter( $aUserDefinedAttributes ) {
 }
 
 /**
- * Returns the most recent post link content. Used for the pepites.
+ * Returns the most recent link post content. Used for the pepites.
  *
  * @link https://codex.wordpress.org/Function_Reference/wp_get_recent_posts
  *
  * @param array $aDefaults Array of arguments to retrieve the most recent post link. Use the default.
- * @return array [ 'post_content_raw'=>'...', 'post_content'=>'...' ]
+ * @return array [ 0 => [ 'post_content'=>'...' ], ... ]
  */
 function getMostRecentPostLinkContent( array $aDefaults = [ 'post_status'=>'publish', 'has_password'=>false, 'numberposts'=>21, 'orderby'=>'post_date', 'order'=>'DESC', 'tax_query' => [[ 'taxonomy' => 'post_format', 'field' => 'slug', 'terms' => [ 'post-format-link' ]]]]) {
 
     // Initialize
-    $aReturn = FALSE;
+    $aReduced = FALSE;
 
     // Retrieve the most recent posts.
     $aPosts = wp_get_recent_posts( $aDefaults, ARRAY_A );
 
-    // Filter the data
-    if( !empty( $aPosts ) && is_array( $aPosts[0] )){
-        foreach( $aPosts as $aPost ) {
-            $aCurrent = array_intersect_key( $aPost, [ 'post_content'=>'post_content' ] );
-            $aReturn[] = isset( $aCurrent['post_content'] ) ? apply_filters( 'the_content', $aCurrent['post_content']) : '';
-        }
-    } else {
-        $aReturn = [];
+    // Keep onlyt the 'post_content' values
+    if( !empty($aPosts) && is_array( $aPosts[0] ) ) {
+        $aReduced = array_map( function($aPost){return array_intersect_key( $aPost, [ 'post_content'=>'post_content' ] );}, $aPosts );
     }
 
     wp_reset_query();
-    return $aReturn;
+    return $aReduced;
 }
 
 /**
- * Create shortcode for the newsletter subscription
- * Use the shortcode: [lbab_newsletter url="https://my.sendinblue.com/users/subscribe/js_id/2w6oq/id/2"]
+ * Create shortcode for the pepites
+ * Use the shortcode: [lbab_pepites]
  *
  * @param array $aUserDefinedAttributes (Required) User defined attributes in shortcode tag.
- * @return string html code for newsletter
+ * @return string html code for the pepites
  */
 function lbab_shortcode_pepites( $aUserDefinedAttributes ) {
-
+    // Initialize
     $sBuffer = '';
-    $aLinkPosts = \lbab\post\getMostRecentPostLinkContent();
-
-    $aPosts = get_posts( $args );
-
-    foreach ( $aLinkPosts as $oPost ) {
-        $sBuffer .= '<p>' . esc_html( $aLinkPosts['post_content'] ) . '</p>';
+    $iIndex=0;
+    // Get link format posts
+    $aPosts = \lbab\post\getMostRecentPostLinkContent();
+    // Filter the posts
+    if( !empty($aPosts) && is_array( $aPosts[0] ) ) {
+        $aFiltered = array_map( function($aPost){return isset( $aPost['post_content'] ) ? apply_filters( 'the_content', $aPost['post_content']) : '';}, $aPosts );
     }
-
+    // Build lines
+    foreach ( $aLinkPosts as $sContent ) {
+        if( 0===$iIndex++ ) {
+            $sBuffer .= '<div class="row">' . PHP_EOL;
+        }
+        $sBuffer .= '<div class="col-sm-12 col-md-4 col-lg-4">' . PHP_EOL
+                 . $sContent . PHP_EOL
+                 . '</div>' . PHP_EOL;
+        if( 3>=$iIndex ) {
+            $sBuffer .= '</div>' . PHP_EOL;
+            $iIndex=0;
+        }
+    }
     // Return the html code
     return $sBuffer;
 }
