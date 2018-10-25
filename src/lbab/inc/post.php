@@ -150,7 +150,7 @@ function getAttachmentDetailsMarkup( int $iTheId ) : string {
  * @param array $aDefaults Array of arguments to retrieve the most recent post. Use the default.
  * @return array [ 'post_title'=>'...', 'post_name'=>'...', 'post_excerpt'=>'...' ]
  */
-function getMostRecentPostExcerpt( array $aDefaults = [ 'post_status'=>'publish', 'has_password'=>false, 'numberposts'=>1, 'orderby'=>'post_date', 'order'=>'DESC' ]) {
+function getMostRecentPostExcerpt( array $aDefaults = ['post_status'=>'publish','has_password'=>false,'numberposts'=>1,'orderby'=>'post_date','order'=>'DESC','tax_query'=>['taxonomy'=>'post_format','field'=>'slug','terms'=>'post-format-link','operator'=>'NOT IN' ]]) {
 
     // Initialize
     $aReturn = FALSE;
@@ -265,7 +265,7 @@ function lbab_shortcode_newsletter( $aUserDefinedAttributes ) {
  * @param array $aDefaults Array of arguments to retrieve the most recent post link. Use the default.
  * @return array [ 0 => [ 'post_content'=>'...' ], ... ]
  */
-function getMostRecentPostLinkContent( array $aDefaults = [ 'post_status'=>'publish', 'has_password'=>false, 'numberposts'=>21, 'orderby'=>'post_date', 'order'=>'DESC', 'tax_query' => [[ 'taxonomy' => 'post_format', 'field' => 'slug', 'terms' => [ 'post-format-link' ]]]]) {
+function getMostRecentPostLinkContent( array $aDefaults = [ 'post_status'=>'publish', 'has_password'=>false, 'numberposts'=>21, 'orderby'=>'post_date', 'order'=>'DESC', 'tax_query' => [[ 'taxonomy' => 'post_format', 'field' => 'slug', 'terms' => 'post-format-link' ]]]) {
 
     // Initialize
     $aReduced = FALSE;
