@@ -300,14 +300,14 @@ function lbab_shortcode_pepites( $aUserDefinedAttributes ) {
         $aFiltered = array_map( function($aPost){return isset( $aPost['post_content'] ) ? apply_filters( 'the_content', $aPost['post_content']) : '';}, $aPosts );
     }
     // Build lines
-    foreach ( $aLinkPosts as $sContent ) {
+    foreach ( $aFiltered as $sContent ) {
         if( 0===$iIndex++ ) {
             $sBuffer .= '<div class="row">' . PHP_EOL;
         }
         $sBuffer .= '<div class="col-sm-12 col-md-4 col-lg-4">' . PHP_EOL
                  . $sContent . PHP_EOL
                  . '</div>' . PHP_EOL;
-        if( 3>=$iIndex ) {
+        if( $iIndex>=3 ) {
             $sBuffer .= '</div>' . PHP_EOL;
             $iIndex=0;
         }
