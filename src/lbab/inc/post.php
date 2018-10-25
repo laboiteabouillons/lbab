@@ -144,6 +144,7 @@ function getAttachmentDetailsMarkup( int $iTheId ) : string {
 
 /**
  * Returns the most recent post excerpt. Used in the footer.
+ * Do not show post format link.
  *
  * @link https://codex.wordpress.org/Function_Reference/wp_get_recent_posts
  *
