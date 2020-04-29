@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 /**
- * The template for displaying the poyright inside the footer.
+ * The template for displaying the copyright inside the footer.
  *
  *
  * @link https://developer.wordpress.org/themes/basics/template-files/#template-partials
@@ -10,7 +10,7 @@ declare(strict_types=1);
  * @version 1.0
  */
 ?>
-<aside role="contentInfo">
+<aside>
 <ul>
 <li>Copyright&nbsp;&copy;&nbsp;<?php bloginfo('name'); ?>&nbsp;<?php echo date('Y'); ?></li>
 <li>Tous&nbsp;droits&nbsp;réservés</li>

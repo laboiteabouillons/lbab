@@ -27,7 +27,7 @@ function setAuthenticationForREST( $result ) {
     }
 
     if( !is_user_logged_in()) {
-        return new WP_Error( 'rest_not_logged_in', 'You are not currently logged in.', [ 'status' => 401 ] );
+        return new \WP_Error( 'rest_not_logged_in', 'You are not currently logged in.', [ 'status' => 401 ] );
     }
     return $result;
 }
@@ -163,4 +163,60 @@ function getCustomFont() : string {
 function getCustomPaginationTemplate( string $sTemplate, string $sClass ) : string {
     $sReturn = str_replace( [ '<h2 ', '</h2>', '<div class="nav-links">', '</div>' ], [ '<!--h2 ', '</h2-->', '', '' ], $sTemplate );
     return $sReturn;
+}
+
+/**
+ * Removes version parameter from any enqueued scripts.
+ *
+ * @param string $sSrc The source URL of the enqueued style.
+ * @param string $sHandle The style's registered handle.
+ * @return string
+ */
+function filterVersionParameterFromEnqueuedScript( string $sSrc, string $sHandle ) : string {
+    if( false !== strpos( $sSrc, 'ver=' )){
+        $sSrc = remove_query_arg( 'ver', $sSrc );
+    }
+    return $sSrc;
+}
+
+/**
+ * Removes WordPress version parameter from any enqueued scripts.
+ *
+ * @param string $sSrc The source URL of the enqueued style.
+ * @param string $sHandle The style's registered handle.
+ * @return string
+ */
+function filterWordPressVersionParameterFromEnqueuedScript( string $sSrc, string $sHandle ) : string {
+    if( false !== strpos( $sSrc, 'ver=' . get_bloginfo( 'version' ))){
+        $sSrc = remove_query_arg( 'ver', $sSrc );
+    }
+    return $sSrc;
+}
+
+/**
+ * Appends CSS style to the <head> section of the login screen’s HTML.
+ *
+ */
+function printCustomLoginLogo() {
+    echo '<style type="text/css">.login h1 a{background-image:url(' . get_template_directory_uri() . '/assets/img/logo/lbab-nobkg.svg) !important;width:213px !important;height:180px !important;background-size:180px 180px; !important}</style>';
+}
+
+/**
+ * Filters the title attribute of the header logo above login form.
+ *
+ * @param string $sTitle The title.
+ * @return string
+ */
+function getCustomLoginHeaderTitle( string $sTitle ) : string {
+    return esc_attr( get_bloginfo( 'description' ));
+}
+
+/**
+ * Filters the url attribute of the header logo above login form.
+ *
+ * @param string $sUrl The URL.
+ * @return string
+ */
+function getCustomLoginHeaderUrl( string $sUrl ) : string {
+    return esc_attr( get_bloginfo( 'url' ));
 }

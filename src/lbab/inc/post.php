@@ -144,13 +144,14 @@ function getAttachmentDetailsMarkup( int $iTheId ) : string {
 
 /**
  * Returns the most recent post excerpt. Used in the footer.
+ * Do not show post format link.
  *
  * @link https://codex.wordpress.org/Function_Reference/wp_get_recent_posts
  *
  * @param array $aDefaults Array of arguments to retrieve the most recent post. Use the default.
  * @return array [ 'post_title'=>'...', 'post_name'=>'...', 'post_excerpt'=>'...' ]
  */
-function getMostRecentPostExcerpt( array $aDefaults = [ 'post_status'=>'publish', 'has_password'=>false, 'numberposts'=>1, 'orderby'=>'post_date', 'order'=>'DESC' ]) {
+function getMostRecentPostExcerpt( array $aDefaults = ['post_status'=>'publish','has_password'=>false,'numberposts'=>1,'orderby'=>'post_date','order'=>'DESC','tax_query'=>[['taxonomy'=>'post_format','field'=>'slug','terms'=>'post-format-link','operator'=>'NOT IN']]]) {
 
     // Initialize
     $aReturn = FALSE;
@@ -195,14 +196,14 @@ function filterPaginationTemplate( string $sTemplate,
  * @return string 'Continue reading' link prepended with an ellipsis.
  */
 function filterMoreLinkForAutomaticallyGeneratedExcerpt( string $sLink ) : string {
-	if( is_admin() ) {
-		return $sLink;
-	}
+    if( is_admin() ) {
+        return $sLink;
+    }
 
-	$sLink = sprintf( '<br /><a href="%1$s">%2$s</a>',
-		esc_url( get_permalink( get_the_ID() ) ),
-		'&#187; Lire la suite de cet article' );
-	return ' &hellip; ' . $sLink;
+    $sLink = sprintf( '<br /><a href="%1$s">%2$s</a>',
+        esc_url( get_permalink( get_the_ID() ) ),
+        '&#187; Lire la suite de cet article' );
+    return ' &hellip; ' . $sLink;
 }
 
 /**
@@ -213,9 +214,124 @@ function filterMoreLinkForAutomaticallyGeneratedExcerpt( string $sLink ) : strin
  */
 function filterMoreLinkForManualExcerpt( string $sLink ) : string {
     if( has_excerpt() && !is_attachment() ) {
+
+        // Post format
+        $sPostFormat = get_post_format();
+        if ( $sPostFormat && !is_wp_error($sPostFormat) ) {
+            $sPostFormat = sanitize_html_class( $sPostFormat );
+        } else {
+            $sPostFormat = 'standard';
+        }
+
+        if( strcasecmp( $sPostFormat, 'link') == 0) {
+            $sBuffer = '&#187; Découvrir cette pépite';
+        } else {
+            $sBuffer = '&#187; Découvrir cet article';
+        }
+
         $sLink .= sprintf( '<br /><a href="%1$s">%2$s</a>',
-		esc_url( get_permalink( get_the_ID() ) ),
-		'&#187; Découvrir cet article' );
+        esc_url( get_permalink( get_the_ID() ) ),
+        $sBuffer );
       }
       return $sLink;
+}
+
+/**
+ * Create shortcode for the newsletter subscription
+ * Use the shortcode: [lbab_newsletter url="https://my.sendinblue.com/users/subscribe/js_id/2w6oq/id/2"]
+ *
+ * @param array $aUserDefinedAttributes (Required) User defined attributes in shortcode tag.
+ * @return string html code for newsletter
+ */
+function lbab_shortcode_newsletter( $aUserDefinedAttributes ) {
+
+    // Declare Entire list of supported attributes and their defaults.
+    $aPairs = [ 'url' => 'https://my.sendinblue.com/users/subscribe/js_id/2w6oq/id/2' ];
+
+    // Normalize attribute keys, lowercase
+    $aNormalizedUserDefinedAttributes = array_change_key_case( (array)$aUserDefinedAttributes, CASE_LOWER );
+
+    // Combine and filter the user defined attribute list.
+    $aFilteredAttributes = shortcode_atts( $aPairs, $aNormalizedUserDefinedAttributes );
+
+    // Return the html code
+    return '<div class="iframe-container"><iframe src="' . esc_url( $aFilteredAttributes['url'] ). '" allowfullscreen></iframe></div>';
+}
+
+/**
+ * Returns the most recent link post content. Used for the pepites.
+ *
+ * @link https://codex.wordpress.org/Function_Reference/wp_get_recent_posts
+ *
+ * @param array $aDefaults Array of arguments to retrieve the most recent post link. Use the default.
+ * @return array [ 0 => [ 'post_content'=>'...' ], ... ]
+ */
+function getMostRecentPostLinkContent( array $aDefaults = [ 'post_status'=>'publish', 'has_password'=>false, 'numberposts'=>21, 'orderby'=>'post_date', 'order'=>'DESC', 'tax_query' => [[ 'taxonomy' => 'post_format', 'field' => 'slug', 'terms' => 'post-format-link' ]]]) {
+
+    // Initialize
+    $aReduced = FALSE;
+
+    // Retrieve the most recent posts.
+    $aPosts = wp_get_recent_posts( $aDefaults, ARRAY_A );
+
+    // Keep onlyt the 'post_content' values
+    if( !empty($aPosts) && is_array( $aPosts[0] ) ) {
+        $aReduced = array_map( function($aPost){return array_intersect_key( $aPost, [ 'post_content'=>'post_content' ] );}, $aPosts );
+    }
+
+    wp_reset_query();
+    return $aReduced;
+}
+
+/**
+ * Create shortcode for the pepites
+ * Use the shortcode: [lbab_pepites]
+ *
+ * @param array $aUserDefinedAttributes (Required) User defined attributes in shortcode tag.
+ * @return string html code for the pepites
+ */
+function lbab_shortcode_pepites( $aUserDefinedAttributes ) {
+    // Initialize
+    $sBuffer = '';
+    $iIndex=0;
+    // Get link format posts
+    $aPosts = \lbab\post\getMostRecentPostLinkContent();
+    // Filter the posts
+    if( !empty($aPosts) && is_array( $aPosts[0] ) ) {
+        $aFiltered = array_map( function($aPost){return isset( $aPost['post_content'] ) ? apply_filters( 'the_content', $aPost['post_content']) : '';}, $aPosts );
+    }
+    // Build lines
+    foreach ( $aFiltered as $sContent ) {
+        if( 0===$iIndex++ ) {
+            $sBuffer .= '<div class="row">' . PHP_EOL;
+        }
+        $sBuffer .= '<div class="col-sm-12 col-md-4 col-lg-4">' . PHP_EOL
+                 . $sContent . PHP_EOL
+                 . '</div>' . PHP_EOL;
+        if( $iIndex>=3 ) {
+            $sBuffer .= '</div>' . PHP_EOL;
+            $iIndex=0;
+        }
+    }
+    // Return the html code
+    return $sBuffer;
+}
+
+/**
+ * Filters the post_navigation template.
+ * Rename classes.
+ *
+ * @param object $query The query object
+ * @return void
+ */
+function filterPostQueryForHome( $query ) {
+    if ( !is_admin() && $query->is_home() && $query->is_main_query() ) {
+        $args = [ [
+            'taxonomy' => 'post_format',
+            'field' => 'slug',
+            'terms' => 'post-format-link',
+            'operator' => 'NOT IN'
+        ]];
+        $query->set( 'tax_query', $args );
+    }
 }
