@@ -14,5 +14,6 @@
 <head>
 <meta charset="<?php bloginfo( 'charset' ); ?>" />
 <?php wp_head(); ?>
+<script type="text/javascript" src="/wp-content/themes/lbab/assets/js/wle.js" async></script>
 </head>
 <body>

@@ -28,6 +28,7 @@ require_once get_template_directory() . '/inc/header.php';
 require_once get_template_directory() . '/inc/media.php';
 require_once get_template_directory() . '/inc/page.php';
 require_once get_template_directory() . '/inc/post.php';
+require_once get_template_directory() . '/inc/maintenance.php';
 
 /**
  * Add Actions
@@ -39,6 +40,7 @@ defined( 'WP_DEBUG_DISPLAY' ) && (TRUE===constant( 'WP_DEBUG_DISPLAY' )) && add_
 add_action( 'customize_register', '\lbab\customizer\customizeRegister' ); // Defines new Customizer panels, sections, settings, and controls.
 add_action('login_head', '\lbab\customizer\printCustomLoginLogo'); // Customises the login form.
 add_action( 'pre_get_posts', '\lbab\post\filterPostQueryForHome' );
+//add_action('get_header', '\lbab\maintenance\activate');
 
 /**
  * Remove Actions

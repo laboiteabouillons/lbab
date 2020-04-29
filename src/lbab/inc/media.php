@@ -47,7 +47,7 @@ function buildSizedSrcset( string $sUrl, array $aSizes = [ '1366w' => '1366x768'
  * @return string
  */
 function buildImageTagWithSizedSrcset( string $sUrl, string $sAlt ): string {
-    return sprintf( '<img src="%1$s" alt="%2$s" %3$s >'
+    return sprintf( '<img decoding="async" loading="lazy" src="%1$s" alt="%2$s" %3$s >'
         , esc_attr( esc_url( $sUrl ) )
         , esc_attr( $sAlt )
         , \lbab\media\buildSizedSrcset( $sUrl ) );
